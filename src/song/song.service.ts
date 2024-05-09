@@ -41,6 +41,17 @@ export class SongService {
     return song;
   }
 
+  async getSongName(name: string): Promise<ISong[]> {
+    console.log(`Buscando canciones con nombre: ${name}`);
+    const songs: ISong[] = await this.songModel.find({ name: name });
+    console.log(`Canciones encontradas: ${JSON.stringify(songs)}`);
+    if (!songs || songs.length === 0) {
+      console.log(`No se encontraron canciones con el nombre: ${name}`);
+      throw new NotFoundException(`No songs found with name '${name}'`);
+    }
+    return songs;
+}
+
   async deleteSong(id: string): Promise<ISong> {
     const song = await this.songModel.findByIdAndDelete(id);
     if (!song) {
