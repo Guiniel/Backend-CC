@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Put } from '@nestjs/common';
 import { SongService } from './song.service';
 import { CreateSongDto } from './dto/create-song.dto';
@@ -48,6 +49,17 @@ export class SongController {
       });
     } catch (err) {
       return response.status(400).json(err.response)
+  }
+}
+@Get('search/:name')
+async getSongName(@Res() response, @Param('name') name: string) {
+  try {
+    console.log(name)
+    const song = await this.songService.getSongName(name);
+    console.log(song)
+    return response.status(200).json(song);
+  } catch (err) {
+    return response.status(400).json(err.response);
   }
 }
 
