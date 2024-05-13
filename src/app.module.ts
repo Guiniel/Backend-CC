@@ -6,10 +6,12 @@ import { SongSchema } from './song/entities/song.entity';
 import { SongService } from './song/song.service';
 import { SongController } from './song/song.controller';
 
+const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
 @Module({
+  
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
-    MongooseModule.forRoot('mongodb://localhost:27017', {dbName: 'songdb'}),
+    MongooseModule.forRoot(uri, {dbName: 'songdb'}),
     MongooseModule.forFeature([{ name: 'Song', schema: SongSchema }]),
   ],
   controllers: [SongController],
