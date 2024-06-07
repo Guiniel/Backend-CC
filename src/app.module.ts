@@ -10,7 +10,7 @@ import { SongController } from './song/song.controller';
   
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
-    MongooseModule.forRoot("mongodb://127.0.0.1:27017", {dbName: 'songdb'}),
+    MongooseModule.forRoot(process.env.MONGO_URL, {dbName: 'songdb'}),
     MongooseModule.forFeature([{ name: 'Song', schema: SongSchema }]),
   ],
   controllers: [SongController],
