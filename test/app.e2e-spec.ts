@@ -1,24 +1,36 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { Test } from '@nestjs/testing';
+import { SongModule } from '../src/song/song.module';
+import { SongService } from '../src/song/song.service';
+import { INestApplication } from '@nestjs/common';
 
-describe('AppController (e2e)', () => {
+describe('Songs', () => {
   let app: INestApplication;
+  let songService = { getAllSongs: () => [{name:"dd", artist: "ddd", genre: "bachata", duration: 15}] };
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
+      imports: [SongModule],
+    })
+      .overrideProvider(SongService)
+      .useValue(songService)
+      .compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleRef.createNestApplication();
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it(`/GET songs`, () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/song')
       .expect(200)
-      .expect('Hello World!');
+      .expect({
+        message: 'All song data successfully obtained',
+        songData: songService.getAllSongs(),
+      });
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });
