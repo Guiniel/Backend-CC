@@ -1,0 +1,22 @@
+services:
+
+  backend:
+    image: backend-cc:elefante
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017
+    depends_on:
+      - mongodb
+
+
+  mongodb:
+    image: mongo:jammy
+
+  frontend:
+    image: frontend-cc:elefante
+    ports:
+      - "80:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://backend:3001
+    depends_on:
+      - backend
+    
