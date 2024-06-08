@@ -1,8 +1,8 @@
-FROM node:20.14.0-alpine3.19 as build
+FROM node:20.14.0-alpine3.19 AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 RUN npm install
 
@@ -10,21 +10,17 @@ COPY . .
 
 RUN npm run build
 
-FROM node:20.14.0-alpine3.19 
+FROM node:20.14.0-alpine3.19
 
 WORKDIR /app
 
-COPY --from=build /app/package*.json ./
-
+COPY package.json package-lock.json ./
 RUN npm install --only=production
 
-COPY --from=build /app/dist ./dist
+COPY --from=builder /app/dist ./dist
+
+COPY --from=builder /app/tsconfig.build.json ./tsconfig.build.json
 
 EXPOSE 3001
 
-ENV MONGODB_URI="mongodb://usuario:contraseña@servidor:puerto/base_de_datos"
-
-CMD ["node", "dist/main.js"]
-
-
-
+CMD ["node", "dist/main"]
